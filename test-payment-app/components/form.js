@@ -1,9 +1,16 @@
+import * as Yup from 'yup';
 import { Box, Button, Group, PasswordInput, NumberInput } from '@mantine/core';
-import { useForm } from '@mantine/form';
-import { DatePicker } from '@mantine/dates';
+import { useForm, yupResolver } from '@mantine/form';
+
+const schema = Yup.object().shape({
+  cardNumber: Yup.number(),
+  expirationDate: Yup.string().email('Invalid email'),
+  cvv: Yup.number().min(18, 'You must be at least 18 to create an account'),
+});
 
 function PaymentForm() {
   const form = useForm({
+    schema: yupResolver(schema),
     initialValues: {
       cardNumber: null,
       expirationDate: false,
@@ -26,20 +33,21 @@ function PaymentForm() {
           hideControls
           placeholder="Card number"
           label="Card number"
+          {...form.getInputProps('Card number')}
           required
         />
-        <DatePicker
+        <NumberInput
+          hideControls
           placeholder="MM/YYYY"
           label="Expiry date"
           inputFormat="MM/YYYY"
           labelFormat="MM/YYYY"
-          defaultValue={new Date()}
           required
         />
         <PasswordInput
           placeholder="CVV"
           label="CVV"
-          {...form.getInputProps('password')}
+          {...form.getInputProps('CVV')}
           required
         />
         <NumberInput
